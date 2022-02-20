@@ -38,7 +38,6 @@ export function PlayerButtons(player:Player) {
     nextBtn?.addEventListener('click', () => handleAudioChange(player, true));
 
     slideWrapper?.addEventListener('click', () => {
-      console.log('Hey')
       player.unmute();
       muteBtn?.setAttribute('src', 'img/mute.svg');
       volumeSlider.disabled = false;

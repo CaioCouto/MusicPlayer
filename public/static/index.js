@@ -106,7 +106,6 @@ function PlayerButtons(player) {
     prevBtn == null ? void 0 : prevBtn.addEventListener("click", () => handleAudioChange(player, false));
     nextBtn == null ? void 0 : nextBtn.addEventListener("click", () => handleAudioChange(player, true));
     slideWrapper == null ? void 0 : slideWrapper.addEventListener("click", () => {
-      console.log("Hey");
       player.unmute();
       muteBtn == null ? void 0 : muteBtn.setAttribute("src", "img/mute.svg");
       volumeSlider.disabled = false;
