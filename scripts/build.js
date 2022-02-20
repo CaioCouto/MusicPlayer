@@ -22,7 +22,7 @@ esbuild
     ...options,
     bundle: true,
     entryPoints: ['src/index.ts'],
-    outfile: 'build/index.js',
+    outfile: 'public/static/index.js',
     format: 'esm',
     plugins: [style()],
   })

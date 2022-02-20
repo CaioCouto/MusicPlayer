@@ -1,0 +1,39 @@
+.main__player-btns {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: var(--player-size);
+	border-top: var(--cards-border);
+	background: #fff;
+
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+.main__player-prev,
+.main__player-next {
+	height: 35%;
+	border-radius: 50%;
+}
+
+.main__player-playPause {
+	border-radius: 50%;
+	height: 70%;
+}
+
+.main__player-prev:hover,
+.main__player-prev:focus,
+.main__player-next:hover, 
+.main__player-next:focus, 
+.main__player-playPause:hover,
+.main__player-playPause:focus {
+	cursor: pointer;
+	background: rgba(0, 0, 0, 0.15);
+}
+
+.main__player-prev:active,
+.main__player-next:active, 
+.main__player-playPause:active {
+	background: rgba(0, 0, 0, 0.45);
+}

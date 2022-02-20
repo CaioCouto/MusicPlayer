@@ -1,24 +1,36 @@
 import { Playlist } from '~/models/Playlist';
 export class Player implements PlayerType {
   public album: AlbumType | null;
-  public playing: boolean;
+  private _playing: boolean;
   readonly playlist: PlaylistType;
   public trackUrl: string | null;
   private _albumIndex: number;
   private _trackIndex: number;
+  private _audioElement: HTMLAudioElement;
+  private _audioElementCurrentSrc: string | null;
+  private _audioElementCurrentTime: number;
 
   constructor() {
     this._albumIndex = 0;
     this._trackIndex = 0;
     this.playlist = new Playlist();
-    this.playing = false;
+    this._playing = false;
     this.album = null;
     this.trackUrl = null;
+    this._audioElement = new Audio();
+    this._audioElementCurrentSrc = null;
+    this._audioElementCurrentTime = 0;
+  }
+
+  private returnsAudioSourceAndCurrentTime(): Array<any> {
+    const isTheSameMusic = this.trackUrl === this._audioElementCurrentSrc;  
+    if(isTheSameMusic) return [ this._audioElementCurrentSrc!, this._audioElementCurrentTime];
+    else return [ this.trackUrl, 0 ];
   }
 
   public set albumIndex(albumIndex: number) {
     const albumIndexIsValid = albumIndex <= (this.playlist.albums.length - 1); 
-    if(albumIndexIsValid){
+    if(albumIndexIsValid) {
       this._albumIndex = albumIndex;
     }
   }
@@ -32,26 +44,34 @@ export class Player implements PlayerType {
   }
   
   public get albumIndex(): number {
-    return this._albumIndex
+    return this._albumIndex;
   }
 
   public get trackIndex(): number {
-    return this._trackIndex
+    return this._trackIndex;
   }  
   
+  public get playing(): boolean {
+    return this._playing;
+  }  
 
   public play(): void {
     this.album = this.playlist.albums[this._albumIndex];
     this.trackUrl = this.album.tracks[this._trackIndex].url;
-    this.playing = true;
+    [ this._audioElement.src, this._audioElement.currentTime ] = this.returnsAudioSourceAndCurrentTime();
+    this._audioElement.load();
+    this._audioElement.play();
+    this._playing = true;
   }
 
   public pause(): void {
-    this.playing = false;
+    this._audioElementCurrentTime = this._audioElement.currentTime;
+    this._audioElementCurrentSrc = this._audioElement.currentSrc;
+    this._audioElement.pause();
+    this._playing = false;
   }
 
   public nextTrack(): void {
-    this.pause();
     if(this.album?.isLastTrack(this._trackIndex)) {
       if(this.playlist.isLastAlbum(this._albumIndex)) {
         this._albumIndex = 0;
@@ -64,12 +84,10 @@ export class Player implements PlayerType {
     else {
       this._trackIndex += 1;
     }
-    this.play();
   }
 
   public prevTrack(): void {
     const lastSongOfPreviousAlbumIndex = (index:number): number => this.playlist.albums[index].tracks.length - 1;
-    this.pause();
     if(this.album?.isFirstTrack(this._trackIndex)) {
       if(this.playlist.isFirstAlbum(this._albumIndex)) {
         this._albumIndex = this.playlist.albums.length - 1;
@@ -82,6 +100,5 @@ export class Player implements PlayerType {
     else {
       this._trackIndex -= 1;
     }
-    this.play();
   }
 }

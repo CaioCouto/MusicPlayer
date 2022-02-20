@@ -5,7 +5,7 @@
     "build": "node ./scripts/build.js minify=true",
     "dev": "node ./scripts/build.js watch=true",
     "format": "prettier --write src",
-    "serve": "npx live-server --port=3000 build",
+    "serve": "npx live-server --port=3000 ./public",
     "sirv": "npx -p sirv-cli sirv build --port 3000 --single --dev",
     "start": "run-p dev serve",
     "test": "jest"

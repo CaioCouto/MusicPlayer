@@ -1,0 +1,7 @@
+.Header {
+  color: gray;
+  padding: 0 var(--app-padding);
+  
+  display: flex;
+  align-items: center;
+}
