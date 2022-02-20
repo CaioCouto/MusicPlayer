@@ -1,27 +1,23 @@
 import { changePlayButtonImg, clearTrackPlayingStyle, html, mounted } from '~/utils';
 import './AlbumCard.css';
 
-function addTrackPlayingStyle(track: Element): void {
-  track.classList.add('playing');
+function applyEventListenerToTrack(track:Element, player:PlayerType, albumIndex:number): void {
+  track.addEventListener('click', () => {
+    clearTrackPlayingStyle();
+    const trackIndex = track.getAttribute('data-trackId');
+    player.albumIndex = albumIndex;
+    player.trackIndex = Number(trackIndex);
+    player.play();
+    changePlayButtonImg('img/pause.svg');
+    track.classList.add('playing');
+  })
 }
 
 export function AlbumCard(album:AlbumType, albumIndex:number, player:PlayerType) {
 
   mounted(function() {
     const audioTracks = document.querySelectorAll(`#main__album${albumIndex}-track`);
-    audioTracks.forEach(track => {
-      track.addEventListener('click', () => {
-        clearTrackPlayingStyle();
-        
-        const trackIndex = track.getAttribute('data-trackId');
-        player.albumIndex = albumIndex;
-        player.trackIndex = Number(trackIndex);
-
-        changePlayButtonImg('img/pause.svg');
-        addTrackPlayingStyle(track);
-        player.play();
-      })
-    });
+    audioTracks.forEach(track => applyEventListenerToTrack(track, player, albumIndex));
   });
 
   return html`

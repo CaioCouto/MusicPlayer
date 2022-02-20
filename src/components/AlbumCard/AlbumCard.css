@@ -103,7 +103,7 @@
 @media (min-width: 1200px) {
 
 	.main__section {
-		flex-basis: 40%;
+		width: 40%;
 	}
 
 	.main__album-title {

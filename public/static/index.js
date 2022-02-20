@@ -123,23 +123,21 @@ function PlayerButtons(player) {
 }
 
 // src/components/AlbumCard/index.ts
-function addTrackPlayingStyle2(track) {
-  track.classList.add("playing");
+function applyEventListenerToTrack(track, player, albumIndex) {
+  track.addEventListener("click", () => {
+    clearTrackPlayingStyle();
+    const trackIndex = track.getAttribute("data-trackId");
+    player.albumIndex = albumIndex;
+    player.trackIndex = Number(trackIndex);
+    player.play();
+    changePlayButtonImg("img/pause.svg");
+    track.classList.add("playing");
+  });
 }
 function AlbumCard(album, albumIndex, player) {
   mounted(function() {
     const audioTracks = document.querySelectorAll(`#main__album${albumIndex}-track`);
-    audioTracks.forEach((track) => {
-      track.addEventListener("click", () => {
-        clearTrackPlayingStyle();
-        const trackIndex = track.getAttribute("data-trackId");
-        player.albumIndex = albumIndex;
-        player.trackIndex = Number(trackIndex);
-        changePlayButtonImg("img/pause.svg");
-        addTrackPlayingStyle2(track);
-        player.play();
-      });
-    });
+    audioTracks.forEach((track) => applyEventListenerToTrack(track, player, albumIndex));
   });
   return html`
     <section class="main__section">
