@@ -14,7 +14,7 @@ const options = args.reduce((res, arg) => {
 
 esbuild.build({
   outdir: 'build',
-  plugins: [copy({ src: './public', dest: './build', recursive: true })],
+  plugins: [copy({ src: './docs', dest: './build', recursive: true })],
 });
 
 esbuild
@@ -22,7 +22,7 @@ esbuild
     ...options,
     bundle: true,
     entryPoints: ['src/index.ts'],
-    outfile: 'public/static/index.js',
+    outfile: 'docs/static/index.js',
     format: 'esm',
     plugins: [style()],
   })
