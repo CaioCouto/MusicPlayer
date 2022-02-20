@@ -1,7 +1,7 @@
 @import "https://cdn.skypack.dev/normalize.css@8.0.1";
 @import "https://fonts.googleapis.com/css2?family=Roboto:ital@0;1&display=swap";
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-8452-f063t0.3su.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-17484-11bgo85.gs7p.css */
 .App {
   display: grid;
   gap: 1rem;
@@ -24,7 +24,7 @@
   }
 }
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-8452-vmvean.cw9vg.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-17484-922kxm.gs5oq.css */
 .Header {
   color: gray;
   padding: 0 var(--app-padding);
@@ -32,7 +32,7 @@
   align-items: center;
 }
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-8452-kvf6cu.u5aqf.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-17484-qng7ha.bqf7.css */
 .main__player-btns {
   position: fixed;
   bottom: 0;
@@ -82,7 +82,7 @@
   }
 }
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-8452-1kk4lwm.tqdv.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-17484-yfc305.r4q0i.css */
 .main__section {
   margin: 0 var(--app-padding) 1rem;
   padding: 1rem;
@@ -180,7 +180,7 @@
   }
 }
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-8452-39h4kq.rt1r9.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-17484-11z0zgs.xxu3l.css */
 :root {
   --player-size: 15vh;
   --app-padding: 1rem;
