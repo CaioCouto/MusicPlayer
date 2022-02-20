@@ -1,7 +1,7 @@
 @import "https://cdn.skypack.dev/normalize.css@8.0.1";
 @import "https://fonts.googleapis.com/css2?family=Roboto:ital@0;1&display=swap";
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-1gfjm04.qdvd.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-y5lhs.qll6xn.css */
 .App {
   display: grid;
   gap: 1rem;
@@ -24,7 +24,7 @@
   }
 }
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-1iu0pec.5pu.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-ppq5mj.gm1fs.css */
 .Header {
   color: gray;
   padding: 0 var(--app-padding);
@@ -32,7 +32,7 @@
   align-items: center;
 }
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-4ep2pi.0999j.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-s7gcoo.xx3jb.css */
 .main__player-btns {
   position: fixed;
   bottom: 0;
@@ -43,6 +43,10 @@
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+}
+.main__player-mute,
+.main__player-volume {
+  display: none;
 }
 .main__player-mute,
 .main__player-prev,
@@ -71,8 +75,14 @@
 .main__player-volume:disabled {
   pointer-events: none;
 }
+@media (min-width: 900px) {
+  .main__player-mute,
+  .main__player-volume {
+    display: inline-block;
+  }
+}
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-dlaxo4.njo8o.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-1981zgh.gcjri.css */
 .main__section {
   margin: 0 var(--app-padding) 1rem;
   padding: 1rem;
@@ -170,7 +180,7 @@
   }
 }
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-wp47ol.ug2wl.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-i7zcs2.b7q7r.css */
 :root {
   --player-size: 15vh;
   --app-padding: 1rem;

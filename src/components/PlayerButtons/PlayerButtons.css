@@ -12,6 +12,11 @@
 }
 
 .main__player-mute,
+.main__player-volume {
+	display: none;
+}
+
+.main__player-mute,
 .main__player-prev,
 .main__player-next {
 	height: 35%;
@@ -41,4 +46,11 @@
 
 .main__player-volume:disabled {
 	pointer-events: none;
+}
+
+@media (min-width: 900px) {
+	.main__player-mute,
+	.main__player-volume {
+		display: inline-block;
+	}
 }
