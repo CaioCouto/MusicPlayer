@@ -25,7 +25,7 @@ export function AlbumCard(album:AlbumType, albumIndex:number, player:PlayerType,
   return html`
     <section class="main__section">
       <div class="main__album-information">
-        <img class="main__album-cover" src="${album.cover}"/>            
+        <img class="main__album-cover" src="${location.href}docs/${album.cover}"/>            
         <div>
           <p class="main__album-title">${album.title}</p>
           <p class="main__album-artist">${album.artist}</p>
