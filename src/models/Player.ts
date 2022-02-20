@@ -6,9 +6,6 @@ export class Player implements PlayerType {
   private _playing: boolean;
   private _albumIndex: number;
   private _trackIndex: number;
-  private _audioElement: HTMLAudioElement;
-  private _audioElementCurrentSrc: string | null;
-  private _audioElementCurrentTime: number;
 
   constructor() {
     this._albumIndex = 0;
@@ -17,28 +14,19 @@ export class Player implements PlayerType {
     this._playing = false;
     this.album = null;
     this.trackUrl = null;
-    this._audioElement = new Audio();
-    this._audioElementCurrentSrc = null;
-    this._audioElementCurrentTime = 0;
-  }
-
-  private returnsAudioSourceAndCurrentTime(): Array<any> {
-    const isTheSameMusic = this.trackUrl === this._audioElementCurrentSrc;  
-    if(isTheSameMusic) return [ this._audioElementCurrentSrc!, this._audioElementCurrentTime];
-    else return [ this.trackUrl, 0 ];
   }
 
   public set albumIndex(albumIndex: number) {
-    const albumIndexIsValid = albumIndex <= (this.playlist.albums.length - 1); 
+    const albumIndexIsValid = albumIndex <= (this.playlist.albums.length - 1);
     if(albumIndexIsValid) {
       this._albumIndex = albumIndex;
     }
   }
 
   public set trackIndex(trackIndex: number) {
-    const albumExists = this.album; 
-    if(albumExists){
-      const trackIsValid = trackIndex <= (this.album!.tracks.length - 1);
+    const album = this.playlist.albums[this._albumIndex]; 
+    if(album){
+      const trackIsValid = trackIndex <= (album.tracks.length - 1);
       this._trackIndex = trackIsValid ? trackIndex : this._trackIndex;
     }
   }
@@ -58,16 +46,10 @@ export class Player implements PlayerType {
   public play(): void {
     this.album = this.playlist.albums[this._albumIndex];
     this.trackUrl = this.album.tracks[this._trackIndex].url;
-    [ this._audioElement.src, this._audioElement.currentTime ] = this.returnsAudioSourceAndCurrentTime();
-    this._audioElement.load();
-    this._audioElement.play();
     this._playing = true;
   }
 
   public pause(): void {
-    this._audioElementCurrentTime = this._audioElement.currentTime;
-    this._audioElementCurrentSrc = this._audioElement.currentSrc;
-    this._audioElement.pause();
     this._playing = false;
   }
 
@@ -100,21 +82,5 @@ export class Player implements PlayerType {
     else {
       this._trackIndex -= 1;
     }
-  }
-
-  public changeVolume(volume: number): void {
-    this._audioElement.volume = volume;
-  }
-  
-  public mute(): void {
-    this._audioElement.muted = true;
-  }
-  
-  public unmute(): void {
-    this._audioElement.muted = false; 
-  }
-  
-  public muted(): boolean {
-    return this._audioElement.muted;
   }
 }

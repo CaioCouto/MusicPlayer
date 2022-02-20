@@ -62,6 +62,35 @@ function changePlayButtonImg(imgPath) {
   playPauseBtn == null ? void 0 : playPauseBtn.setAttribute("src", imgPath);
 }
 
+// src/utils/controlAudioElement.ts
+function createAudioElement() {
+  return new Audio();
+}
+function playAudioElement(audioElement, url, seconds = 0) {
+  if (url) {
+    audioElement.src = url;
+    audioElement.load();
+  }
+  audioElement.currentTime = seconds;
+  audioElement.play();
+  changePlayButtonImg("img/pause.svg");
+}
+function pauseAudioElement(audioElement) {
+  audioElement.pause();
+  changePlayButtonImg("img/play.svg");
+}
+function changeAudioElementVolume(audioElement, volume) {
+  audioElement.volume = volume / 100;
+}
+function muteAudioElement(audioElement, muteBtn) {
+  audioElement.muted = true;
+  muteBtn.setAttribute("src", "img/unmute.svg");
+}
+function unmuteAudioElement(audioElement, muteBtn) {
+  audioElement.muted = false;
+  muteBtn.setAttribute("src", "img/mute.svg");
+}
+
 // src/components/Header/index.ts
 function Header() {
   mounted(function() {
@@ -83,7 +112,7 @@ function addTrackPlayingStyle(player) {
     }
   });
 }
-function handleAudioChange(player, next) {
+function handleAudioChange(player, next, audioElement) {
   if (!player.trackUrl)
     return;
   clearTrackPlayingStyle();
@@ -93,46 +122,44 @@ function handleAudioChange(player, next) {
     player.prevTrack();
   addTrackPlayingStyle(player);
   player.play();
-  changePlayButtonImg("img/pause.svg");
+  playAudioElement(audioElement, player.trackUrl);
 }
-function PlayerButtons(player) {
+function PlayerButtons(player, audioElement) {
   mounted(function() {
+    let currentTime;
     const volumeSlider = document.querySelector(".main__player-volume");
     const slideWrapper = document.querySelector(".main__player-slideWrapper");
     const playPauseBtn = document.querySelector(".main__player-playPause");
     const prevBtn = document.querySelector(".main__player-prev");
     const nextBtn = document.querySelector(".main__player-next");
     const muteBtn = document.querySelector(".main__player-mute");
-    prevBtn == null ? void 0 : prevBtn.addEventListener("click", () => handleAudioChange(player, false));
-    nextBtn == null ? void 0 : nextBtn.addEventListener("click", () => handleAudioChange(player, true));
+    prevBtn == null ? void 0 : prevBtn.addEventListener("click", () => handleAudioChange(player, false, audioElement));
+    nextBtn == null ? void 0 : nextBtn.addEventListener("click", () => handleAudioChange(player, true, audioElement));
+    volumeSlider == null ? void 0 : volumeSlider.addEventListener("change", () => changeAudioElementVolume(audioElement, Number(volumeSlider.value)));
     slideWrapper == null ? void 0 : slideWrapper.addEventListener("click", () => {
-      player.unmute();
-      muteBtn == null ? void 0 : muteBtn.setAttribute("src", "img/mute.svg");
+      unmuteAudioElement(audioElement, muteBtn);
       volumeSlider.disabled = false;
     });
     muteBtn == null ? void 0 : muteBtn.addEventListener("click", () => {
-      if (player.muted()) {
-        player.unmute();
-        muteBtn == null ? void 0 : muteBtn.setAttribute("src", "img/mute.svg");
-      } else {
-        player.mute();
-        muteBtn == null ? void 0 : muteBtn.setAttribute("src", "img/unmute.svg");
-      }
+      if (audioElement.muted)
+        unmuteAudioElement(audioElement, muteBtn);
+      else
+        muteAudioElement(audioElement, muteBtn);
       volumeSlider.disabled = !volumeSlider.disabled;
     });
-    volumeSlider == null ? void 0 : volumeSlider.addEventListener("change", () => {
-      const volume = Number(volumeSlider.value) / 100;
-      player.changeVolume(volume);
-    });
     playPauseBtn == null ? void 0 : playPauseBtn.addEventListener("click", () => {
-      if (player.playing) {
+      if (!player.trackUrl) {
+        player.play();
+        addTrackPlayingStyle(player);
+        playAudioElement(audioElement, player.trackUrl, currentTime);
+      } else if (player.playing) {
         player.pause();
-        changePlayButtonImg("img/play.svg");
+        currentTime = audioElement.currentTime;
+        pauseAudioElement(audioElement);
       } else {
         player.play();
-        changePlayButtonImg("img/pause.svg");
+        playAudioElement(audioElement, null, currentTime);
       }
-      addTrackPlayingStyle(player);
     });
   });
   return html`
@@ -149,21 +176,21 @@ function PlayerButtons(player) {
 }
 
 // src/components/AlbumCard/index.ts
-function applyEventListenerToTrack(track, player, albumIndex) {
+function applyEventListenerToTrack(track, player, albumIndex, audioElement) {
   track.addEventListener("click", () => {
     clearTrackPlayingStyle();
     const trackIndex = track.getAttribute("data-trackId");
     player.albumIndex = albumIndex;
     player.trackIndex = Number(trackIndex);
     player.play();
-    changePlayButtonImg("img/pause.svg");
+    playAudioElement(audioElement, player.trackUrl);
     track.classList.add("playing");
   });
 }
-function AlbumCard(album, albumIndex, player) {
+function AlbumCard(album, albumIndex, player, audioElement) {
   mounted(function() {
     const audioTracks = document.querySelectorAll(`#main__album${albumIndex}-track`);
-    audioTracks.forEach((track) => applyEventListenerToTrack(track, player, albumIndex));
+    audioTracks.forEach((track) => applyEventListenerToTrack(track, player, albumIndex, audioElement));
   });
   return html`
     <section class="main__section">
@@ -251,16 +278,6 @@ var Player = class {
     this._playing = false;
     this.album = null;
     this.trackUrl = null;
-    this._audioElement = new Audio();
-    this._audioElementCurrentSrc = null;
-    this._audioElementCurrentTime = 0;
-  }
-  returnsAudioSourceAndCurrentTime() {
-    const isTheSameMusic = this.trackUrl === this._audioElementCurrentSrc;
-    if (isTheSameMusic)
-      return [this._audioElementCurrentSrc, this._audioElementCurrentTime];
-    else
-      return [this.trackUrl, 0];
   }
   set albumIndex(albumIndex) {
     const albumIndexIsValid = albumIndex <= this.playlist.albums.length - 1;
@@ -269,9 +286,9 @@ var Player = class {
     }
   }
   set trackIndex(trackIndex) {
-    const albumExists = this.album;
-    if (albumExists) {
-      const trackIsValid = trackIndex <= this.album.tracks.length - 1;
+    const album = this.playlist.albums[this._albumIndex];
+    if (album) {
+      const trackIsValid = trackIndex <= album.tracks.length - 1;
       this._trackIndex = trackIsValid ? trackIndex : this._trackIndex;
     }
   }
@@ -287,15 +304,9 @@ var Player = class {
   play() {
     this.album = this.playlist.albums[this._albumIndex];
     this.trackUrl = this.album.tracks[this._trackIndex].url;
-    [this._audioElement.src, this._audioElement.currentTime] = this.returnsAudioSourceAndCurrentTime();
-    this._audioElement.load();
-    this._audioElement.play();
     this._playing = true;
   }
   pause() {
-    this._audioElementCurrentTime = this._audioElement.currentTime;
-    this._audioElementCurrentSrc = this._audioElement.currentSrc;
-    this._audioElement.pause();
     this._playing = false;
   }
   nextTrack() {
@@ -325,31 +336,20 @@ var Player = class {
       this._trackIndex -= 1;
     }
   }
-  changeVolume(volume) {
-    this._audioElement.volume = volume;
-  }
-  mute() {
-    this._audioElement.muted = true;
-  }
-  unmute() {
-    this._audioElement.muted = false;
-  }
-  muted() {
-    return this._audioElement.muted;
-  }
 };
 
 // src/views/App.ts
 function App() {
   const player = new Player();
+  const audioElement = createAudioElement();
   albums_default.forEach((album) => player.playlist.addAlbum(album));
   return html`
     <div class="App">
       ${Header()}
       <main class="main">
-        ${player.playlist.albums.map((album, index) => AlbumCard(album, index, player)).join("")}
+        ${player.playlist.albums.map((album, index) => AlbumCard(album, index, player, audioElement)).join("")}
       </main>
-      ${PlayerButtons(player)}
+      ${PlayerButtons(player, audioElement)}
     </div>
   `;
 }

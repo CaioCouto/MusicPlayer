@@ -1,6 +1,6 @@
 import './App.css';
 import albums from '~/mocks/albums.json';
-import { html } from '~/utils';
+import { createAudioElement, html } from '~/utils';
 import { Header } from '../components/Header';
 import { PlayerButtons } from '../components/PlayerButtons';
 import { AlbumCard } from '~/components/AlbumCard';
@@ -9,6 +9,7 @@ import { Player } from '~/models/Player';
 
 export function App() {
   const player = new Player();
+  const audioElement = createAudioElement();
   albums.forEach(album => player.playlist.addAlbum(album))
   
   return html`
@@ -20,12 +21,13 @@ export function App() {
             AlbumCard(
               album, 
               index, 
-              player
+              player,
+              audioElement
             )
           )).join('')
         }
       </main>
-      ${PlayerButtons(player)}
+      ${PlayerButtons(player, audioElement)}
     </div>
   `;
 }

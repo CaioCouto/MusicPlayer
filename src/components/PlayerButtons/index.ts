@@ -1,5 +1,5 @@
 import { Player } from '~/models/Player';
-import { changePlayButtonImg, clearTrackPlayingStyle, html, mounted } from '~/utils';
+import { changeAudioElementVolume, clearTrackPlayingStyle, html, mounted, muteAudioElement, pauseAudioElement, playAudioElement, unmuteAudioElement } from '~/utils';
 import './PlayerButtons.css';
 
 function addTrackPlayingStyle(player:Player): void {
@@ -12,21 +12,23 @@ function addTrackPlayingStyle(player:Player): void {
   })
 }
 
-function handleAudioChange(player:Player, next:boolean) {
+function handleAudioChange(player:Player, next:boolean, audioElement:HTMLAudioElement) {
   if (!player.trackUrl) return;
 
   clearTrackPlayingStyle();
   if (next) player.nextTrack();
   else player.prevTrack();
   addTrackPlayingStyle(player);
-  
   player.play();
-  changePlayButtonImg('img/pause.svg');
+
+  playAudioElement(audioElement, player.trackUrl);
 }
 
-export function PlayerButtons(player:Player) {
+export function PlayerButtons(player:Player, audioElement:HTMLAudioElement) {
 
   mounted(function() {
+    let currentTime: number;
+
     const volumeSlider = document.querySelector('.main__player-volume') as HTMLInputElement;
     const slideWrapper = document.querySelector('.main__player-slideWrapper');
     const playPauseBtn = document.querySelector('.main__player-playPause');
@@ -34,42 +36,36 @@ export function PlayerButtons(player:Player) {
     const nextBtn = document.querySelector('.main__player-next');
     const muteBtn = document.querySelector('.main__player-mute');
 
-    prevBtn?.addEventListener('click', () => handleAudioChange(player, false));
-    nextBtn?.addEventListener('click', () => handleAudioChange(player, true));
+    prevBtn?.addEventListener('click', () => handleAudioChange(player, false, audioElement));
+    nextBtn?.addEventListener('click', () => handleAudioChange(player, true, audioElement));
+    volumeSlider?.addEventListener('change', () => changeAudioElementVolume(audioElement, Number(volumeSlider.value)));
 
     slideWrapper?.addEventListener('click', () => {
-      player.unmute();
-      muteBtn?.setAttribute('src', 'img/mute.svg');
+      unmuteAudioElement(audioElement, muteBtn!);
       volumeSlider.disabled = false;
     });
 
     muteBtn?.addEventListener('click', () => {
-      if(player.muted()) {
-        player.unmute();
-        muteBtn?.setAttribute('src', 'img/mute.svg');
-      }
-      else {
-        player.mute();
-        muteBtn?.setAttribute('src', 'img/unmute.svg');
-      }
+      if(audioElement.muted) unmuteAudioElement(audioElement, muteBtn);
+      else muteAudioElement(audioElement, muteBtn);
       volumeSlider.disabled = !volumeSlider.disabled
     });
 
-    volumeSlider?.addEventListener('change', () => {
-      const volume = Number(volumeSlider.value) / 100;
-      player.changeVolume(volume);
-    });
-
     playPauseBtn?.addEventListener('click', () => {
-      if(player.playing) {
+      if (!player.trackUrl) {
+        player.play();
+        addTrackPlayingStyle(player);
+        playAudioElement(audioElement, player.trackUrl, currentTime);
+      }
+      else if(player.playing) {
         player.pause();
-        changePlayButtonImg('img/play.svg');
+        currentTime = audioElement.currentTime;
+        pauseAudioElement(audioElement);
       }
       else {
         player.play();
-        changePlayButtonImg('img/pause.svg');
+        playAudioElement(audioElement, null, currentTime);
       }      
-      addTrackPlayingStyle(player);
     });
   });
   
