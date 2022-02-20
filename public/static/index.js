@@ -252,7 +252,6 @@ var Player = class {
     this._playing = false;
     this.album = null;
     this.trackUrl = null;
-    this._previousVolume = 0.5;
     this._audioElement = new Audio();
     this._audioElementCurrentSrc = null;
     this._audioElementCurrentTime = 0;
@@ -285,9 +284,6 @@ var Player = class {
   }
   get playing() {
     return this._playing;
-  }
-  get volume() {
-    return this._audioElement.volume;
   }
   play() {
     this.album = this.playlist.albums[this._albumIndex];
@@ -334,12 +330,9 @@ var Player = class {
     this._audioElement.volume = volume;
   }
   mute() {
-    this._previousVolume = this._audioElement.volume;
     this._audioElement.muted = true;
-    this._audioElement.volume = 0;
   }
   unmute() {
-    this._audioElement.volume = this._previousVolume;
     this._audioElement.muted = false;
   }
   muted() {
