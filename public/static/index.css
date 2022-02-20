@@ -1,7 +1,7 @@
 @import "https://cdn.skypack.dev/normalize.css@8.0.1";
 @import "https://fonts.googleapis.com/css2?family=Roboto:ital@0;1&display=swap";
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-kzbcpa.sg1d.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-nx48cf.5409s.css */
 .App {
   display: grid;
   gap: 1rem;
@@ -24,7 +24,7 @@
   }
 }
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-dlf7dc.cixlk.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-qo7d6z.ixnoe.css */
 .Header {
   color: gray;
   padding: 0 var(--app-padding);
@@ -32,7 +32,7 @@
   align-items: center;
 }
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-1cjnm62.m0wp.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-1tutpth.3s2d.css */
 .main__player-btns {
   position: fixed;
   bottom: 0;
@@ -44,6 +44,7 @@
   justify-content: space-evenly;
   align-items: center;
 }
+.main__player-mute,
 .main__player-prev,
 .main__player-next {
   height: 35%;
@@ -67,8 +68,11 @@
 .main__player-playPause:active {
   background: rgba(0, 0, 0, 0.45);
 }
+.main__player-volume:disabled {
+  pointer-events: none;
+}
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-16mq2aa.8nty.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-x56v7n.rd0m8.css */
 .main__section {
   margin: 0 var(--app-padding) 1rem;
   padding: 1rem;
@@ -166,7 +170,7 @@
   }
 }
 
-/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-1oo0u6k.o6rz.css */
+/* temp_stylePlugin:C:\Users\caio_\AppData\Local\Temp\2022120-14968-w02gb7.xb2n.css */
 :root {
   --player-size: 15vh;
   --app-padding: 1rem;

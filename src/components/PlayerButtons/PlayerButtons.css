@@ -11,6 +11,7 @@
 	align-items: center;
 }
 
+.main__player-mute,
 .main__player-prev,
 .main__player-next {
 	height: 35%;
@@ -36,4 +37,8 @@
 .main__player-next:active, 
 .main__player-playPause:active {
 	background: rgba(0, 0, 0, 0.45);
+}
+
+.main__player-volume:disabled {
+	pointer-events: none;
 }

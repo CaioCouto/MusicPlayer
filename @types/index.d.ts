@@ -62,4 +62,8 @@ interface PlayerType {
   pause(): void;
   nextTrack(): void;
   prevTrack(): void;
+  changeVolume(volume:number): void;
+  mute(): void;
+  unmute(): void;
+  muted(): boolean;
 }

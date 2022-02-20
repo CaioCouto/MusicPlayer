@@ -97,11 +97,34 @@ function handleAudioChange(player, next) {
 }
 function PlayerButtons(player) {
   mounted(function() {
+    const volumeSlider = document.querySelector(".main__player-volume");
+    const slideWrapper = document.querySelector(".main__player-slideWrapper");
     const playPauseBtn = document.querySelector(".main__player-playPause");
     const prevBtn = document.querySelector(".main__player-prev");
     const nextBtn = document.querySelector(".main__player-next");
+    const muteBtn = document.querySelector(".main__player-mute");
     prevBtn == null ? void 0 : prevBtn.addEventListener("click", () => handleAudioChange(player, false));
     nextBtn == null ? void 0 : nextBtn.addEventListener("click", () => handleAudioChange(player, true));
+    slideWrapper == null ? void 0 : slideWrapper.addEventListener("click", () => {
+      console.log("Hey");
+      player.unmute();
+      muteBtn == null ? void 0 : muteBtn.setAttribute("src", "img/mute.svg");
+      volumeSlider.disabled = false;
+    });
+    muteBtn == null ? void 0 : muteBtn.addEventListener("click", () => {
+      if (player.muted()) {
+        player.unmute();
+        muteBtn == null ? void 0 : muteBtn.setAttribute("src", "img/mute.svg");
+      } else {
+        player.mute();
+        muteBtn == null ? void 0 : muteBtn.setAttribute("src", "img/unmute.svg");
+      }
+      volumeSlider.disabled = !volumeSlider.disabled;
+    });
+    volumeSlider == null ? void 0 : volumeSlider.addEventListener("change", () => {
+      const volume = Number(volumeSlider.value) / 100;
+      player.changeVolume(volume);
+    });
     playPauseBtn == null ? void 0 : playPauseBtn.addEventListener("click", () => {
       if (player.playing) {
         player.pause();
@@ -115,9 +138,13 @@ function PlayerButtons(player) {
   });
   return html`
     <section class="main__player-btns">
+        <img class="main__player-mute" src="img/mute.svg" />
         <img class="main__player-prev" src="img/prev.svg" />
         <img class="main__player-playPause" src="img/play.svg" />
         <img class="main__player-next" src="img/next.svg" />
+        <div class="main__player-slideWrapper">
+          <input class="main__player-volume" type="range" min="0" max="100" value="100">
+        </div>
     </section>
   `;
 }
@@ -225,6 +252,7 @@ var Player = class {
     this._playing = false;
     this.album = null;
     this.trackUrl = null;
+    this._previousVolume = 0.5;
     this._audioElement = new Audio();
     this._audioElementCurrentSrc = null;
     this._audioElementCurrentTime = 0;
@@ -257,6 +285,9 @@ var Player = class {
   }
   get playing() {
     return this._playing;
+  }
+  get volume() {
+    return this._audioElement.volume;
   }
   play() {
     this.album = this.playlist.albums[this._albumIndex];
@@ -298,6 +329,21 @@ var Player = class {
     } else {
       this._trackIndex -= 1;
     }
+  }
+  changeVolume(volume) {
+    this._audioElement.volume = volume;
+  }
+  mute() {
+    this._previousVolume = this._audioElement.volume;
+    this._audioElement.muted = true;
+    this._audioElement.volume = 0;
+  }
+  unmute() {
+    this._audioElement.volume = this._previousVolume;
+    this._audioElement.muted = false;
+  }
+  muted() {
+    return this._audioElement.muted;
   }
 };
 

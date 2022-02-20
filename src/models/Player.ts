@@ -1,11 +1,12 @@
 import { Playlist } from '~/models/Playlist';
 export class Player implements PlayerType {
   public album: AlbumType | null;
-  private _playing: boolean;
   readonly playlist: PlaylistType;
   public trackUrl: string | null;
+  private _playing: boolean;
   private _albumIndex: number;
   private _trackIndex: number;
+  private _previousVolume: number;
   private _audioElement: HTMLAudioElement;
   private _audioElementCurrentSrc: string | null;
   private _audioElementCurrentTime: number;
@@ -17,6 +18,7 @@ export class Player implements PlayerType {
     this._playing = false;
     this.album = null;
     this.trackUrl = null;
+    this._previousVolume = 0.5;
     this._audioElement = new Audio();
     this._audioElementCurrentSrc = null;
     this._audioElementCurrentTime = 0;
@@ -54,6 +56,10 @@ export class Player implements PlayerType {
   public get playing(): boolean {
     return this._playing;
   }  
+  
+  public get volume(): number {
+    return this._audioElement.volume;
+  } 
 
   public play(): void {
     this.album = this.playlist.albums[this._albumIndex];
@@ -100,5 +106,24 @@ export class Player implements PlayerType {
     else {
       this._trackIndex -= 1;
     }
+  }
+
+  public changeVolume(volume: number): void {
+    this._audioElement.volume = volume;
+  }
+  
+  public mute(): void {
+    this._previousVolume = this._audioElement.volume;
+    this._audioElement.muted = true;
+    this._audioElement.volume = 0;
+  }
+  
+  public unmute(): void {
+    this._audioElement.volume = this._previousVolume; 
+    this._audioElement.muted = false; 
+  }
+  
+  public muted(): boolean {
+    return this._audioElement.muted;
   }
 }
